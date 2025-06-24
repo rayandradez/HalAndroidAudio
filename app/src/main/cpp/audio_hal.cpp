@@ -5,7 +5,7 @@
 #include <errno.h>             // Para códigos de erro como -ENODEV, -EINVAL, etc.
 #include <unistd.h>            // Para usleep (se você já estiver no passo de otimização)
 
-
+// teste
 // --- DEFINIÇÕES MANUAIS DAS MACROS ALOG ---
 // Use __android_log_print diretamente, já que ALOGD/E/I não estão sendo definidas.
 #ifndef ALOGD
