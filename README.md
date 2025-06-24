@@ -190,8 +190,83 @@ A função `audio_write()` em `app/src/main/cpp/audio_hal.cpp` foi projetada par
     *   As primeiras 5 chamadas deverão ser bem-sucedidas e registrar logs de sucesso.
     *   A partir da 6ª chamada, o Logcat deverá exibir mensagens de erro (`ALOGE`) da HAL e da camada JNI, e o status na interface do usuário será atualizado para indicar a falha.
 
-**Importante:**
-*   Para continuar com outras etapas da atividade (como a análise de energia no Passo 7/8), **lembre-se de reverter esta modificação** (comentar novamente o bloco de simulação de falhas) e recompilar o projeto.
+### ⚡ Análise de Desempenho e Otimização (Passo 7 & 8)
+
+Para analisar o impacto da sua HAL no consumo de CPU/energia e testar a otimização implementada, você precisará modificar o código da HAL e utilizar o Android Studio Profiler.
+
+**Contexto:**
+A função `audio_write()` em `app/src/main/cpp/audio_hal.cpp` contém uma linha comentada (`usleep(1000);`) que, quando ativada, simula uma otimização de energia, permitindo que a CPU entre em estados de baixa energia mais frequentemente.
+
+**Passos para Análise (Antes da Otimização):**
+
+1.  **Certifique-se de que nenhum bloco de simulação esteja ativo:** No arquivo `app/src/main/cpp/audio_hal.cpp`, verifique se tanto o bloco de "Simulação de Falhas (Passo 6)" quanto o bloco de "Otimização de Energia (Passo 8)" estão **completamente comentados**. A função `audio_write()` deve estar em seu estado "normal" (sem atrasos e sem falhas simuladas).
+2.  **Recompile e Execute:** Salve `audio_hal.cpp`, limpe e reconstrua o projeto, e execute o aplicativo no emulador/dispositivo.
+3.  **Abra e Grave o Profiler:**
+    *   No Android Studio, vá em `View` > `Tool Windows` > `Profiler`.
+    *   Selecione o processo do seu aplicativo (`com.example.myaudiohalproject`).
+    *   Clique na seção `CPU` e, em seguida, no botão `Record` (círculo vermelho) para iniciar a gravação.
+4.  **Interaja:** No seu aplicativo, clique no botão "Reproduzir Som (via HAL Simulada)" **repetidamente** (umas 10-20 vezes).
+5.  **Observe os Gráficos:**
+    *   Na aba `CPU`, observe o gráfico `CPU Usage` e a `Thread Activity`. Anote o padrão de picos de CPU.
+    *   Na aba `Energy`, observe os "Power Rails" (`CPU Big`, `CPU Little`) para ver o consumo de energia.
+
+**Passos para Testar a Otimização (Após a Otimização):**
+
+1.  **Abra o arquivo:** `app/src/main/cpp/audio_hal.cpp`
+2.  **Localize a função:** `static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes)`
+3.  **Ative a otimização de energia:**
+    *   **Certifique-se de que o bloco de "Simulação de Falhas (Passo 6)" está COMENTADO.**
+    *   **Descomente a linha `usleep(1000);`** dentro da função `audio_write()`.
+
+    O trecho de código **modificado** dentro de `audio_write()` deverá ficar assim:
+
+    ```c++
+    // ... (código anterior) ...
+
+    static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes) {
+        // ... (código existente, bloco de simulação de falhas comentado) ...
+
+        // --- INÍCIO DA MODIFICAÇÃO PARA OTIMIZAÇÃO (Passo 8) ---
+        // Adiciona um pequeno atraso para simular uma otimização de energia.
+        // Isso permite que a CPU "descanse" por um curto período (1 milissegundo),
+        // reduzindo a frequência de processamento intensivo e permitindo que o sistema
+        // entre em estados de baixa energia com mais frequência.
+        usleep(1000); // Pausa por 1 milissegundo (1000 microssegundos)
+        // --- FIM DA MODIFICAÇÃO PARA OTIMIZAÇÃO ---
+
+        ALOGD("AudioHAL: Processando %zu bytes de áudio.", bytes);
+        return bytes;
+    }
+
+    // ... (restante do código) ...
+    ```
+
+4.  **Recompile o Projeto:**
+    *   Salve `audio_hal.cpp`.
+    *   No Android Studio, vá em `Build` > `Clean Project`.
+    *   Em seguida, `Build` > `Rebuild Project`.
+5.  **Execute o Aplicativo e Grave o Profiler Novamente:**
+    *   Inicie o aplicativo no emulador ou dispositivo.
+    *   No Profiler, inicie uma **nova** sessão de gravação.
+    *   Clique no botão "Reproduzir Som (via HAL Simulada)" **repetidamente** (10-20 vezes).
+6.  **Compare os Resultados:**
+    *   Compare os gráficos de `CPU Usage` e `Energy` (Power Rails) desta nova gravação com os da gravação anterior (sem otimização).
+    *   **Observe a redução nos picos de CPU e/ou um padrão de atividade mais "esparso"**, indicando maior eficiência energética.
+
+**Análise de Wake Locks (Opcional, para complementar):**
+
+Para uma análise mais aprofundada dos "wake locks" (mecanismos que impedem a CPU de dormir), você pode usar o `adb shell dumpsys power`.
+
+1.  **Antes da Otimização:** Com a HAL sem `usleep`, execute o app e depois, no terminal:
+    ```bash
+    adb shell dumpsys power | grep "Wake Locks"
+    ```
+2.  **Após a Otimização:** Com a HAL com `usleep(1000)`, execute o app e depois, no terminal:
+    ```bash
+    adb shell dumpsys power | grep "Wake Locks"
+    ```
+    Compare as saídas para verificar se houve redução nos `wake locks` associados ao processo (`com.example.myaudiohalproject`).
+
 
 ## 🤝 Contribuições
 
