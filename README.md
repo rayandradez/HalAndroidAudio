@@ -133,7 +133,65 @@ Certifique-se de que os seguintes componentes do Android SDK estão instalados v
     *   **CPU:** Observe os gráficos de uso da CPU e atividade das threads. Você verá picos de atividade quando a HAL é acionada.
     *   **Energy:** Na aba `Energy`, observe os "Power Rails" (CPU Big, CPU Little, etc.) para correlacionar a atividade da sua HAL com o consumo de energia.
     *   **Otimização:** Após implementar o `usleep(1000)` em `audio_hal.cpp` (conforme o Passo 8 da atividade), compare os gráficos do Profiler antes e depois para demonstrar a redução no consumo de CPU em estado ocioso.
+  
+## 🧪 Testes Específicos da Atividade
 
+### Testando a Simulação de Falhas na HAL (Passo 6)
+
+Para testar a simulação de falhas na Hardware Abstraction Layer (HAL) de áudio, você precisará modificar o código-fonte da HAL e recompilar o projeto.
+
+**Contexto:**
+A função `audio_write()` em `app/src/main/cpp/audio_hal.cpp` foi projetada para simular uma falha de E/S após um número específico de chamadas, demonstrando como diagnosticar problemas em tempo de execução.
+
+**Passos para Testar:**
+
+1.  **Abra o arquivo:** `app/src/main/cpp/audio_hal.cpp`
+2.  **Localize a função:** `static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes)`
+3.  **Descomente o bloco de simulação de falhas:**
+    Procure pelas linhas comentadas que começam com `// --- INÍCIO DA MODIFICAÇÃO PARA SIMULAR FALHAS (Passo 6) ---` e `// --- FIM DA MODIFICAÇÃO PARA SIMULAR FALHAS ---`.
+    **Remova os comentários de bloco (`/*` e `*/`)** que envolvem o código do contador (`static int call_count = 0;`) e a condição `if (call_count > 5)`.
+
+    O trecho de código **modificado** dentro de `audio_write()` deverá ficar assim:
+
+    ```c++
+    // ... (código anterior) ...
+
+    static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes) {
+        // ... (código existente) ...
+
+        // --- INÍCIO DA MODIFICAÇÃO PARA SIMULAR FALHAS (Passo 6) ---
+        // Descomente este bloco para ativar a simulação de falhas.
+        static int call_count = 0; // Contador estático para manter o estado entre chamadas
+        call_count++;
+
+        if (call_count > 5) { // Simula uma falha após a 5ª chamada bem-sucedida
+            ALOGE("AudioHAL: ERRO SIMULADO: Falha após 5 chamadas (chamada #%d)!", call_count);
+            return -EIO; // Retorna um erro de I/O (Input/Output Error)
+        }
+        // --- FIM DA MODIFICAÇÃO PARA SIMULAR FALHAS ---
+
+        ALOGD("AudioHAL: Processando %zu bytes de áudio. (Chamada #%d)", bytes, call_count);
+        return bytes;
+    }
+
+    // ... (restante do código) ...
+    ```
+
+4.  **Recompile o Projeto:**
+    *   Salve `audio_hal.cpp`.
+    *   No Android Studio, vá em `Build` > `Clean Project`.
+    *   Em seguida, `Build` > `Rebuild Project`.
+5.  **Execute o Aplicativo:** Inicie o aplicativo no emulador ou dispositivo.
+6.  **Monitore o Logcat:**
+    *   Limpe o Logcat.
+    *   Mantenha o filtro `tag:AudioHAL|NativeJNI|AudioHAL_App`.
+    *   Clique no botão "Reproduzir Som (via HAL Simulada)" **repetidamente**.
+7.  **Observe os Resultados:**
+    *   As primeiras 5 chamadas deverão ser bem-sucedidas e registrar logs de sucesso.
+    *   A partir da 6ª chamada, o Logcat deverá exibir mensagens de erro (`ALOGE`) da HAL e da camada JNI, e o status na interface do usuário será atualizado para indicar a falha.
+
+**Importante:**
+*   Para continuar com outras etapas da atividade (como a análise de energia no Passo 7/8), **lembre-se de reverter esta modificação** (comentar novamente o bloco de simulação de falhas) e recompilar o projeto.
 
 ## 🤝 Contribuições
 
