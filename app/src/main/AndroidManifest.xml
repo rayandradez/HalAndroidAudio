@@ -2,8 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Para interagir com as configurações de áudio (mesmo que simulado na HAL),
+         e para simular certos cenários de áudio, estas permissões são úteis. -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- A permissão RECORD_AUDIO é comum em aplicativos de áudio, mesmo que
+     não esteja sendo usada diretamente na simulação de escrita da HAL,
+     ela é relevante para o contexto geral de áudio. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
 
     <application
         android:allowBackup="true"

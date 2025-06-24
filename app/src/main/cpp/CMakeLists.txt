@@ -1,54 +1,56 @@
-# For more information about using CMake with Android Studio, read the
-# documentation: https://d.android.com/studio/projects/add-native-code.html.
-# For more examples on how to use CMake, see https://github.com/android/ndk-samples.
+# Para mais informações sobre como usar CMake com Android Studio, consulte a
+# documentação oficial: https://d.android.com/studio/projects/add-native-code.html.
+# Para mais exemplos de uso do CMake, veja https://github.com/android/ndk-samples.
 
-# Sets the minimum CMake version required for this project.
+# Define a versão mínima do CMake necessária para este projeto.
+# É importante usar uma versão compatível com o Android Studio e o NDK.
 cmake_minimum_required(VERSION 3.22.1)
 
-# Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
-# Since this is the top level CMakeLists.txt, the project name is also accessible
-# with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level
-# build script scope).
+# Declara o nome do projeto CMake.
+# Este nome pode ser acessado via ${ PROJECT_NAME} ou ${CMAKE_PROJECT_NAME}.
 project("myaudiohalproject")
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
-#
-# In this top level CMakeLists.txt, ${CMAKE_PROJECT_NAME} is used to define
-# the target library name; in the sub-module's CMakeLists.txt, ${PROJECT_NAME}
-# is preferred for the same purpose.
-#
-# In order to load a library into your app from Java/Kotlin, you must call
-# System.loadLibrary() and pass the name of the library defined here;
-# for GameActivity/NativeActivity derived applications, the same library name must be
-# used in the AndroidManifest.xml file.
-add_library( # Sets the name of the library.
+# --- Definição da Biblioteca Nativa ---
+# Cria e nomeia uma biblioteca compartilhada (.so), que será empacotada com o APK.
+# Você pode definir múltiplas bibliotecas aqui, e o CMake as construirá.
+# Para carregar esta biblioteca no seu app Java/Kotlin, você deve chamar
+# System.loadLibrary() e passar o nome definido aqui (ex: "native-lib").
+add_library( # Define o nome da biblioteca que será gerada.
         native-lib
 
-        # Sets the library as a shared library.
+        # Define o tipo da biblioteca como compartilhada (SHARED).
+        # Bibliotecas compartilhadas são arquivos .so que podem ser carregados em tempo de execução.
         SHARED
 
-        # Provides a relative path to your source file(s).
-        native-lib.cpp   # Mantenha este arquivo para a JNI
-        audio_hal.cpp )  # Adicione sua HAL aqui
+        # Fornece os caminhos relativos para os arquivos fonte da sua biblioteca.
+        # Ambos os arquivos C++ do projeto são incluídos aqui.
+        native-lib.cpp   # O arquivo que contém a interface JNI
+        audio_hal.cpp )  # O arquivo que contém a implementação da HAL de áudio simulada
 
-# Encontra a biblioteca de log do NDK
-find_library( # Sets the name of the path variable.
+# --- Encontrando e Vinculando Bibliotecas do NDK ---
+# Esta seção garante que as bibliotecas necessárias do Android NDK sejam encontradas e vinculadas.
+
+# Encontra a biblioteca de log do NDK.
+# A biblioteca 'log' é necessária para usar as funções de log do Android (ALOGD, ALOGE, etc.).
+find_library( # Define o nome da variável CMake que armazenará o caminho da biblioteca.
         log-lib
 
-        # Specifies the name of the NDK library that
-        # you want CMake to locate.
+        # Especifica o nome da biblioteca do NDK que o CMake deve localizar.
+        # 'log' refere-se à biblioteca 'liblog.so'.
         log )
 
-# Vincula sua biblioteca aos recursos do sistema (como log)
-target_link_libraries( # Specifies the target library.
-        native-lib  # O nome da sua biblioteca
+# Vincula a biblioteca nativa do seu projeto com as bibliotecas do sistema.
+# Isso garante que as funções chamadas no seu código C++ (como as de log)
+# sejam resolvidas corretamente em tempo de linkagem.
+target_link_libraries( # Especifica a biblioteca alvo para vincular.
+        native-lib  # A sua biblioteca principal (definida acima)
 
-        # Links the target library to the log library
-        # included in the NDK.
+        # Vincula a biblioteca alvo à biblioteca de log do NDK.
+        # Isso também adiciona automaticamente os caminhos de inclusão necessários para seus cabeçalhos.
         ${log-lib}
-        # Adicione outras bibliotecas do sistema se precisar, como 'dl' para dlopen/dlsym
-        # dl # Para carregar módulos dinamicamente, se fosse o caso
+
+        # Adicione outras bibliotecas do sistema se forem necessárias.
+        # Por exemplo, 'dl' (para carregamento dinâmico) ou 'm' (para funções matemáticas).
+        # Para esta atividade, apenas 'log' é estritamente necessário.
+        # dl # Exemplo: para dlopen/dlsym, se fosse carregar módulos dinamicamente
 )
