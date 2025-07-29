@@ -1,8 +1,5 @@
 # MyAudioHalProject
 
-![Android Studio Logo](https://developer.android.com/studio/images/studio-logo-lockup.svg)
-![Kotlin Logo](https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.svg)
-
 ## Visão Geral do Projeto
 
 Este projeto, **MyAudioHalProject**, demonstra a implementação de uma **Hardware Abstraction Layer (HAL) de áudio simplificada** e um aplicativo Android embarcado, o `VehicleEqualizerApp`. O objetivo principal é simular a interação entre o sistema operacional Android e componentes de hardware veiculares, como sensores e a rede CAN (Controller Area Network), abstraindo as particularidades do hardware para o software. A HAL (Hardware Abstraction Layer) do Android é uma interface que permite que o sistema operacional se comunique com os componentes de hardware, garantindo a portabilidade do sistema em diferentes dispositivos ao abstrair as especificidades do hardware para o software.
