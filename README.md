@@ -6,11 +6,6 @@ Este projeto, **MyAudioHalProject**, demonstra a implementação de uma **Hardwa
 
 A aplicação foi desenvolvida utilizando **Kotlin** e **Java** no **Android Studio**, com o uso de **Coroutines** para simular a assincronicidade na comunicação CAN. Coroutines são threads leves que permitem escrever código assíncrono de maneira mais sequencial e legível, sendo particularmente adequadas para operações de longa duração, como requisições de rede.
 
-## Link do Repositório
-
-Você pode encontrar o código-fonte completo deste projeto em:
-[https://github.com/rayandradez/HalAndroidAudio](https://github.com/rayandradez/HalAndroidAudio)
-
 ## Funcionalidades
 
 O `VehicleEqualizerApp` e sua HAL simulada foram projetados para atender aos seguintes requisitos funcionais:
