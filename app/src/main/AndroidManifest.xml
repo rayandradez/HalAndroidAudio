@@ -31,6 +31,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".EqualizerService"
+            android:enabled="true"
+            android:exported="false" >
+            <!-- Opcional: Adicionar um intent-filter para ações
+            43
+            específicas se o serviço for iniciado por intenção -->
+            <!-- <intent-filter>
+            <action
+            android:name="com.example.vehicleequalizerapp.action.BIND_EQUALIZER_SERVI
+            CE" />
+            </intent-filter> -->
+        </service>
     </application>
 
 </manifest>
