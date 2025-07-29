@@ -1,274 +1,106 @@
-# 🚀 Android Audio HAL Simulation & Energy Profiling
+# MyAudioHalProject
 
-## 🧑‍💻 Créditos
+![Android Studio Logo](https://developer.android.com/studio/images/studio-logo-lockup.svg)
+![Kotlin Logo](https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.svg)
 
-*   **Desenvolvedores:**
-    *   **Alisson Freitas**
-    *   **Eduardo Perez Uanús**
-    *   **João Gabriel A. Gomes Alves**
-    *   **Rayanne da Silva Andrade**
-*   **Instituição:** Centro Universitário SENAI CIMATEC
-*   **Curso:** Desenvolvimento de Sistemas Embarcados - Android
+## Visão Geral do Projeto
 
-Este repositório contém uma atividade prática de desenvolvimento Android focada na compreensão e simulação de uma Hardware Abstraction Layer (HAL) de áudio, bem como na análise e otimização do consumo de energia em dispositivos móveis. O projeto explora a interação entre código nativo (C++) e a camada gerenciada (Kotlin) via Java Native Interface (JNI), utilizando ferramentas de perfilamento e depuração do Android Studio.
+Este projeto, **MyAudioHalProject**, demonstra a implementação de uma **Hardware Abstraction Layer (HAL) de áudio simplificada** e um aplicativo Android embarcado, o `VehicleEqualizerApp`. O objetivo principal é simular a interação entre o sistema operacional Android e componentes de hardware veiculares, como sensores e a rede CAN (Controller Area Network), abstraindo as particularidades do hardware para o software. A HAL (Hardware Abstraction Layer) do Android é uma interface que permite que o sistema operacional se comunique com os componentes de hardware, garantindo a portabilidade do sistema em diferentes dispositivos ao abstrair as especificidades do hardware para o software.
 
-## 🎯 Objetivo da Atividade
+A aplicação foi desenvolvida utilizando **Kotlin** e **Java** no **Android Studio**, com o uso de **Coroutines** para simular a assincronicidade na comunicação CAN. Coroutines são threads leves que permitem escrever código assíncrono de maneira mais sequencial e legível, sendo particularmente adequadas para operações de longa duração, como requisições de rede.
 
-O principal objetivo desta atividade é:
-*   Desenvolver uma HAL de áudio simplificada em C++.
-*   Integrar essa HAL a um aplicativo Android (Kotlin) usando JNI.
-*   Simular falhas na HAL e diagnosticar problemas usando Logcat.
-*   Analisar o consumo de CPU e energia da HAL utilizando o Android Studio Profiler.
-*   Implementar e verificar técnicas de otimização de energia.
-*   Documentar todo o processo e os resultados em um relatório técnico.
+## Link do Repositório
 
-## ✨ Funcionalidades e Conceitos Explorados
+Você pode encontrar o código-fonte completo deste projeto em:
+[https://github.com/rayandradez/HalAndroidAudio](https://github.com/rayandradez/HalAndroidAudio)
 
-*   **Implementação de HAL de Áudio (C++):** Criação de uma HAL simplificada que simula operações de áudio (`audio_open`, `audio_close`, `audio_write`).
-*   **Java Native Interface (JNI):** Ponte de comunicação entre o código Kotlin do aplicativo e o código C++ da HAL.
-*   **Android NDK (Native Development Kit):** Ferramentas para compilação de código C/C++ para Android.
-*   **CMake:** Sistema de build para gerenciamento da compilação do código nativo.
-*   **Android Studio Profiler:** Análise detalhada de uso de CPU e consumo de energia (Power Rails).
-*   **Depuração com Logcat:** Utilização de logs para rastrear o fluxo de execução e diagnosticar problemas em tempo real.
-*   **Simulação de Falhas:** Injeção de erros controlados para testar a resiliência da HAL.
-*   **Otimização de Energia:** Aplicação de técnicas simples (ex: `usleep`) para reduzir o consumo de CPU.
+## Funcionalidades
 
-## 🛠️ Tecnologias Utilizadas
+O `VehicleEqualizerApp` e sua HAL simulada foram projetados para atender aos seguintes requisitos funcionais:
 
-*   **Linguagens:** Kotlin, C++
-*   **IDE:** Android Studio
-*   **Build System:** Gradle, CMake
-*   **Ferramentas:** Android NDK, Android Studio Profiler, `adb logcat`, `adb shell dumpsys`
+*   **Otimização de Recursos**: Implementar uma técnica simples de otimização na HAL para reduzir o consumo excessivo de CPU em estado ocioso.
+*   **Simulação de Sensor Veicular**: Simular a leitura de dados de diferentes sensores veiculares, incluindo velocidade (em $$km/h$$), temperatura externa (em $$°C$$) e nível de combustível (em $$%$$).
+*   **Exibição e Atualização de Dados do Sensor**: Exibir a velocidade atual simulada em um `TextView` na interface do usuário e permitir a atualização manual via um botão.
+*   **Simulação de Calibração de Sensor**: Incluir um método `calibrateSensor()` na classe `VehicleSensorSimulator` para simular um processo de calibração com um atraso de $$1$$ segundo.
+*   **Simulação de Barramento CAN**: Simular um barramento CAN do veículo, permitindo o envio e recebimento de mensagens.
+*   **Definição de Mensagem CAN**: Possibilitar a definição de mensagens CAN com um identificador (`id`) e dados (`data`).
+*   **Envio de Mensagem CAN Simulado**: Permitir o envio de mensagens CAN simuladas através de um botão na interface.
+*   **Exibição e Processamento de Volume CAN**: Exibir o nível de volume mestre recebido via CAN em um `TextView`. O simulador CAN processa mensagens com ID $$0x123$$ para extrair e exibir o nível de volume mestre.
+*   **Integração com Equalizador de Áudio**: A funcionalidade de equalização de áudio é capaz de se integrar com um dispositivo conectado a uma rede CAN, reagindo a comandos CAN (por exemplo, ajustando o volume do áudio).
+*   **Controles de Equalizador**: O aplicativo contém controles para ajustar o equalizador (Bass, Mid, Treble).
+*   **Ativação/Desativação do Equalizador**: Permitir ativar e desativar o equalizador através de um `Switch`.
 
-## 🚀 Como Configurar e Executar o Projeto
+## Requisitos Não-Funcionais
 
-### Pré-requisitos
+O projeto também buscou aderir a requisitos não-funcionais importantes para a qualidade do sistema:
 
-*   Android Studio instalado.
-*   Java Development Kit (JDK) configurado.
-*   Um emulador Android (API 35 ou superior) ou dispositivo físico.
+*   **Confiabilidade**: Comportamento previsível em cenários de sucesso e falha.
+*   **Testabilidade**: Facilidade de depuração e validação através de logs.
+*   **Eficiência Energética**: Otimização para minimizar o consumo de bateria.
+*   **Desempenho**: Interação fluida com a UI, sem lentidão (`jank`). O simulador CAN deve liberar recursos quando não for mais necessário.
+*   **Modularidade**: Design modular com classes separadas para simulação de sensores (`VehicleSensorSimulator`), mensagens CAN (`CanMessage`) e barramento CAN (`VehicleCanBusSimulator`).
+*   **Clareza e Documentação**: Código e processo de desenvolvimento bem documentados.
 
-### Configuração Crucial do NDK
+## Arquitetura e Desenvolvimento
 
-Durante o desenvolvimento desta atividade, foram encontrados **desafios significativos e persistentes** na configuração do NDK no Android Studio, que resultaram em erros de "file not found" para cabeçalhos padrão do NDK (`hardware/hardware.h`, `log/log.h`). Para contornar esses problemas e garantir a compilação, foi necessário um processo de configuração manual e a injeção de definições de cabeçalho.
+O projeto é estruturado em torno de classes de simulação chave e sua integração com a `MainActivity`:
 
-**Versão do NDK Recomendada/Utilizada:** `r25 (27.0.12077973)`
+### `VehicleSensorSimulator`
 
-**Passos para a Configuração do NDK (Altamente Recomendado):**
+Esta classe Kotlin (`VehicleSensorSimulator.kt`) atua como um modelo fiel de um sensor veicular genérico. Ela gera e fornece dados simulados para parâmetros como velocidade, temperatura externa e nível de combustível.
 
-1.  **Feche o Android Studio completamente.**
-2.  **Limpeza Manual do NDK:** Navegue até o diretório do seu Android SDK (geralmente `C:\Users\SEU_USUARIO\AppData\Local\Android\Sdk`) e **exclua a pasta `ndk` inteira**.
-3.  **Reinicie o computador.**
-4.  **Download Manual do NDK:** Baixe a versão `r25c` (ou a mais recente do `r25`) do NDK diretamente do site oficial do Android NDK: [https://developer.android.com/ndk/downloads/](https://developer.android.com/ndk/downloads/) (Procure por "Archived NDK releases" e a versão `r25c`).
-5.  **Extraia o NDK:** Descompacte o arquivo `.zip` baixado para uma pasta (ex: `android-ndk-r25c`).
-6.  **Mova o NDK:** Copie (ou recorte) a pasta `android-ndk-r25c` e cole-a **diretamente dentro do seu diretório Android SDK** (ex: `C:\Users\SEU_USUARIO\AppData\Local\Android\Sdk\android-ndk-r25c`).
-7.  **Configure o NDK no Android Studio:**
-    *   Abra o Android Studio.
-    *   Vá em `File` > `Project Structure...` > `SDK Location`.
-    *   Na seção "Android NDK location", clique em `Edit` ou no ícone de pasta e selecione o caminho para a pasta `android-ndk-r25c` que você colou (ex: `C:\Users\SEU_USUARIO\AppData\Local\Android\Sdk\android-ndk-r25c`).
-    *   Clique `OK` para aplicar as mudanças.
-8.  **Forçe a Versão do NDK no `build.gradle`:**
-    *   Abra o arquivo `app/build.gradle` (Module: app).
-    *   Dentro do bloco `android { ... }`, na seção `defaultConfig { ... }`, adicione ou atualize a linha `ndkVersion` para:
-        ```gradle
-        android {
-            // ...
-            defaultConfig {
-                // ...
-                ndkVersion "27.0.12077973" // Garante que a versão r25 seja usada
-            }
-            // ...
-        }
-        ```
-    *   **Importante:** Remova a linha `ndkVersion` se ela estiver presente em outros arquivos `build.gradle` de módulos ou no `build.gradle` do projeto.
+*   **`readSensorData()`**: Retorna valores inteiros simulados dentro de intervalos específicos para cada tipo de sensor.
+*   **`calibrateSensor()`**: Simula uma operação de calibração com um atraso.
 
-### Instalação de SDKs e Build-Tools
+A interface do usuário (`activity_main.xml`) foi modificada para exibir a velocidade simulada em um `TextView` e um botão para atualizar essa leitura, integrando-se diretamente com a lógica da `MainActivity.kt`.
 
-Certifique-se de que os seguintes componentes do Android SDK estão instalados via SDK Manager (`Tools` > `SDK Manager`):
-*   **SDK Platforms:** Android 15 (API Level 35)
-*   **SDK Tools:**
-    *   Android SDK Build-Tools (Versão 35 ou superior)
-    *   Android SDK Platform-Tools
-    *   CMake
-    *   NDK (Side by side) - *Embora você tenha instalado manualmente, o SDK Manager ainda pode listar e gerenciar outras versões. A configuração no `build.gradle` é que força a versão específica.*
+### Simulação de Comunicação CAN
 
-### Compilando e Executando
+Para simular a rede CAN, foram criadas duas classes principais:
 
-1.  **Sincronizar Projeto:** No Android Studio, vá em `File` > `Sync Project with Gradle Files`.
-2.  **Limpar Projeto:** Vá em `Build` > `Clean Project`.
-3.  **Reconstruir Projeto:** Vá em `Build` > `Rebuild Project`.
-4.  **Executar no Emulador/Dispositivo:** Clique no botão `Run 'app'` (o triângulo verde na barra de ferramentas) para instalar e iniciar o aplicativo em seu emulador ou dispositivo conectado.
+*   **`CanMessage`**: Uma `data class` Kotlin (`CanMessage.kt`) que padroniza a estrutura das mensagens CAN simuladas, contendo um `id` (identificador) e `data` (dados em `ByteArray`).
+*   **`VehicleCanBusSimulator`**: Esta classe (`VehicleCanBusSimulator.kt`) é o coração da simulação do barramento CAN. Ela gerencia o fluxo de mensagens e notifica os componentes interessados sobre mensagens recebidas.
+    *   **Gerenciamento Assíncrono**: Utiliza **Kotlin Coroutines** (`Channel`, `CoroutineScope`, `MutableSharedFlow`) para simular o envio e recebimento de mensagens de forma assíncrona, garantindo que as operações de simulação não bloqueiem a thread principal da UI.
+    *   **Processamento de Mensagens**: Possui um consumidor que "ouve" continuamente as mensagens, registra-as via log e as publica para observadores. Mensagens com `ID 0x123` são processadas para extrair o nível de volume mestre.
+    *   **`sendMessage()`**: Permite que outros componentes "enviem" mensagens CAN para o barramento simulado.
+    *   **`stopSimulator()`**: Crucial para o gerenciamento de recursos, cancela todas as rotinas associadas e libera recursos.
 
-### Verificando a Funcionalidade
+A `MainActivity.kt` integra o `VehicleCanBusSimulator`, permitindo que a UI envie e receba mensagens CAN simuladas e reaja a elas, com um `TextView` dedicado para exibir o volume mestre CAN e um botão para simular o envio de mensagens de volume.
 
-1.  **Abra o Logcat:** No Android Studio, vá em `View` > `Tool Windows` > `Logcat`.
-2.  **Defina o Filtro:** Use o filtro `tag:AudioHAL|NativeJNI|AudioTest|AudioHAL_App` para ver apenas os logs relevantes do seu aplicativo e da HAL.
-3.  **Interaja com o Aplicativo:**
-    *   A interface simples do aplicativo contém um botão "Reproduzir Som (via HAL Simulada)".
-    *   Clique no botão.
-    *   **Observe o Logcat:** Você deverá ver uma sequência de logs detalhando a chamada do Kotlin para a JNI, a inicialização e o "processamento" da HAL, e o feedback do SoundPool.
-    *   **Exemplo de Logs Esperados:**
-        ```
-        D/AudioHAL_App: MainActivity: Botão 'Reproduzir Som' clicado. Chamando HAL...
-        D/NativeJNI: JNI: Tentando chamar triggerHalAudioWrite...
-        D/NativeJNI: JNI: Módulo de áudio HAL obtido via referência direta.
-        D/AudioHAL: AudioHAL: Dispositivo de áudio inicializado com sucesso.
-        D/NativeJNI: JNI: Dispositivo de áudio HAL aberto com sucesso.
-        D/AudioHAL: AudioHAL: Processando 1024 bytes de áudio.
-        D/NativeJNI: JNI: Função audio_write da HAL chamada. Bytes processados: 1024
-        D/AudioHAL_App: Chamada HAL de áudio concluída com sucesso!
-        D/AudioTest: playTestSound: Iniciando carregamento do som.
-        D/AudioTest: playTestSound: Som carregado com sucesso, tentando tocar.
-        D/AudioTest: playTestSound: Som reproduzido via SoundPool (não HAL direta)
-        ```
-    *   **Verifique o Status:** O `TextView` abaixo do botão na UI deve ser atualizado para "Status: HAL de áudio chamada com sucesso!".
+### Hardware Abstraction Layer (HAL) Conceitual
 
-### Analisando Consumo de Energia e CPU
+Embora a implementação física de uma HAL não seja o foco primário deste projeto simulado, o conceito de HAL é ilustrado:
 
-1.  **Abra o Profiler:** No Android Studio, vá em `View` > `Tool Windows` > `Profiler`.
-2.  **Selecione o Processo:** Escolha seu emulador/dispositivo e o processo `com.example.myaudiohalproject`.
-3.  **Inicie a Gravação:** Clique no botão de gravação (círculo vermelho) na seção `CPU` ou `Energy`.
-4.  **Interaja:** Clique repetidamente no botão "Reproduzir Som (via HAL Simulada)" no seu aplicativo.
-5.  **Analise:**
-    *   **CPU:** Observe os gráficos de uso da CPU e atividade das threads. Você verá picos de atividade quando a HAL é acionada.
-    *   **Energy:** Na aba `Energy`, observe os "Power Rails" (CPU Big, CPU Little, etc.) para correlacionar a atividade da sua HAL com o consumo de energia.
-    *   **Otimização:** Após implementar o `usleep(1000)` em `audio_hal.cpp` (conforme o Passo 8 da atividade), compare os gráficos do Profiler antes e depois para demonstrar a redução no consumo de CPU em estado ocioso.
-  
-## 🧪 Testes Específicos da Atividade
+*   **Ponte entre Software e Hardware Simulados**: No `VehicleCanBusSimulator`, quando uma mensagem CAN de volume é processada, o valor do volume seria, em um sistema real, repassado para uma interface dentro da HAL de áudio. A HAL conteria a lógica para converter este comando em instruções para o controlador de áudio do veículo.
+*   **JNI (Java Native Interface)**: A presença conceitual de métodos JNI representa o ponto de contato entre o código Kotlin/Java do aplicativo e as bibliotecas nativas de C/C++ que compõem os drivers ou a própria HAL.
+*   **Abstração para Controle do Equalizador**: Os comandos de ajuste do equalizador (graves, médios, agudos) originados na UI seriam, em um cenário de produção, traduzidos por meio de uma HAL de áudio ou drivers específicos para mensagens CAN apropriadas, enviadas ao dispositivo de áudio.
 
-### Testando a Simulação de Falhas na HAL (Passo 6)
+## Como Executar e Verificar
 
-Para testar a simulação de falhas na Hardware Abstraction Layer (HAL) de áudio, você precisará modificar o código-fonte da HAL e recompilar o projeto.
+Para executar e verificar o aplicativo:
 
-**Contexto:**
-A função `audio_write()` em `app/src/main/cpp/audio_hal.cpp` foi projetada para simular uma falha de E/S após um número específico de chamadas, demonstrando como diagnosticar problemas em tempo de execução.
-
-**Passos para Testar:**
-
-1.  **Abra o arquivo:** `app/src/main/cpp/audio_hal.cpp`
-2.  **Localize a função:** `static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes)`
-3.  **Descomente o bloco de simulação de falhas:**
-    Procure pelas linhas comentadas que começam com `// --- INÍCIO DA MODIFICAÇÃO PARA SIMULAR FALHAS (Passo 6) ---` e `// --- FIM DA MODIFICAÇÃO PARA SIMULAR FALHAS ---`.
-    **Remova os comentários de bloco (`/*` e `*/`)** que envolvem o código do contador (`static int call_count = 0;`) e a condição `if (call_count > 5)`.
-
-    O trecho de código **modificado** dentro de `audio_write()` deverá ficar assim:
-
-    ```c++
-    // ... (código anterior) ...
-
-    static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes) {
-        // ... (código existente) ...
-
-        // --- INÍCIO DA MODIFICAÇÃO PARA SIMULAR FALHAS (Passo 6) ---
-        // Descomente este bloco para ativar a simulação de falhas.
-        static int call_count = 0; // Contador estático para manter o estado entre chamadas
-        call_count++;
-
-        if (call_count > 5) { // Simula uma falha após a 5ª chamada bem-sucedida
-            ALOGE("AudioHAL: ERRO SIMULADO: Falha após 5 chamadas (chamada #%d)!", call_count);
-            return -EIO; // Retorna um erro de I/O (Input/Output Error)
-        }
-        // --- FIM DA MODIFICAÇÃO PARA SIMULAR FALHAS ---
-
-        ALOGD("AudioHAL: Processando %zu bytes de áudio. (Chamada #%d)", bytes, call_count);
-        return bytes;
-    }
-
-    // ... (restante do código) ...
-    ```
-
-4.  **Recompile o Projeto:**
-    *   Salve `audio_hal.cpp`.
-    *   No Android Studio, vá em `Build` > `Clean Project`.
-    *   Em seguida, `Build` > `Rebuild Project`.
-5.  **Execute o Aplicativo:** Inicie o aplicativo no emulador ou dispositivo.
-6.  **Monitore o Logcat:**
-    *   Limpe o Logcat.
-    *   Mantenha o filtro `tag:AudioHAL|NativeJNI|AudioHAL_App`.
-    *   Clique no botão "Reproduzir Som (via HAL Simulada)" **repetidamente**.
-7.  **Observe os Resultados:**
-    *   As primeiras 5 chamadas deverão ser bem-sucedidas e registrar logs de sucesso.
-    *   A partir da 6ª chamada, o Logcat deverá exibir mensagens de erro (`ALOGE`) da HAL e da camada JNI, e o status na interface do usuário será atualizado para indicar a falha.
-
-### ⚡ Análise de Desempenho e Otimização (Passo 7 & 8)
-
-Para analisar o impacto da sua HAL no consumo de CPU/energia e testar a otimização implementada, você precisará modificar o código da HAL e utilizar o Android Studio Profiler.
-
-**Contexto:**
-A função `audio_write()` em `app/src/main/cpp/audio_hal.cpp` contém uma linha comentada (`usleep(1000);`) que, quando ativada, simula uma otimização de energia, permitindo que a CPU entre em estados de baixa energia mais frequentemente.
-
-**Passos para Análise (Antes da Otimização):**
-
-1.  **Certifique-se de que nenhum bloco de simulação esteja ativo:** No arquivo `app/src/main/cpp/audio_hal.cpp`, verifique se tanto o bloco de "Simulação de Falhas (Passo 6)" quanto o bloco de "Otimização de Energia (Passo 8)" estão **completamente comentados**. A função `audio_write()` deve estar em seu estado "normal" (sem atrasos e sem falhas simuladas).
-2.  **Recompile e Execute:** Salve `audio_hal.cpp`, limpe e reconstrua o projeto, e execute o aplicativo no emulador/dispositivo.
-3.  **Abra e Grave o Profiler:**
-    *   No Android Studio, vá em `View` > `Tool Windows` > `Profiler`.
-    *   Selecione o processo do seu aplicativo (`com.example.myaudiohalproject`).
-    *   Clique na seção `CPU` e, em seguida, no botão `Record` (círculo vermelho) para iniciar a gravação.
-4.  **Interaja:** No seu aplicativo, clique no botão "Reproduzir Som (via HAL Simulada)" **repetidamente** (umas 10-20 vezes).
-5.  **Observe os Gráficos:**
-    *   Na aba `CPU`, observe o gráfico `CPU Usage` e a `Thread Activity`. Anote o padrão de picos de CPU.
-    *   Na aba `Energy`, observe os "Power Rails" (`CPU Big`, `CPU Little`) para ver o consumo de energia.
-
-**Passos para Testar a Otimização (Após a Otimização):**
-
-1.  **Abra o arquivo:** `app/src/main/cpp/audio_hal.cpp`
-2.  **Localize a função:** `static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes)`
-3.  **Ative a otimização de energia:**
-    *   **Certifique-se de que o bloco de "Simulação de Falhas (Passo 6)" está COMENTADO.**
-    *   **Descomente a linha `usleep(1000);`** dentro da função `audio_write()`.
-
-    O trecho de código **modificado** dentro de `audio_write()` deverá ficar assim:
-
-    ```c++
-    // ... (código anterior) ...
-
-    static int audio_write(audio_hw_device_t* dev, const void* buffer, size_t bytes) {
-        // ... (código existente, bloco de simulação de falhas comentado) ...
-
-        // --- INÍCIO DA MODIFICAÇÃO PARA OTIMIZAÇÃO (Passo 8) ---
-        // Adiciona um pequeno atraso para simular uma otimização de energia.
-        // Isso permite que a CPU "descanse" por um curto período (1 milissegundo),
-        // reduzindo a frequência de processamento intensivo e permitindo que o sistema
-        // entre em estados de baixa energia com mais frequência.
-        usleep(1000); // Pausa por 1 milissegundo (1000 microssegundos)
-        // --- FIM DA MODIFICAÇÃO PARA OTIMIZAÇÃO ---
-
-        ALOGD("AudioHAL: Processando %zu bytes de áudio.", bytes);
-        return bytes;
-    }
-
-    // ... (restante do código) ...
-    ```
-
-4.  **Recompile o Projeto:**
-    *   Salve `audio_hal.cpp`.
-    *   No Android Studio, vá em `Build` > `Clean Project`.
-    *   Em seguida, `Build` > `Rebuild Project`.
-5.  **Execute o Aplicativo e Grave o Profiler Novamente:**
-    *   Inicie o aplicativo no emulador ou dispositivo.
-    *   No Profiler, inicie uma **nova** sessão de gravação.
-    *   Clique no botão "Reproduzir Som (via HAL Simulada)" **repetidamente** (10-20 vezes).
-6.  **Compare os Resultados:**
-    *   Compare os gráficos de `CPU Usage` e `Energy` (Power Rails) desta nova gravação com os da gravação anterior (sem otimização).
-    *   **Observe a redução nos picos de CPU e/ou um padrão de atividade mais "esparso"**, indicando maior eficiência energética.
-
-**Análise de Wake Locks (Opcional, para complementar):**
-
-Para uma análise mais aprofundada dos "wake locks" (mecanismos que impedem a CPU de dormir), você pode usar o `adb shell dumpsys power`.
-
-1.  **Antes da Otimização:** Com a HAL sem `usleep`, execute o app e depois, no terminal:
+1.  **Clone o Repositório**:
     ```bash
-    adb shell dumpsys power | grep "Wake Locks"
+    git clone https://github.com/rayandradez/HalAndroidAudio.git
+    cd HalAndroidAudio
     ```
-2.  **Após a Otimização:** Com a HAL com `usleep(1000)`, execute o app e depois, no terminal:
-    ```bash
-    adb shell dumpsys power | grep "Wake Locks"
-    ```
-    Compare as saídas para verificar se houve redução nos `wake locks` associados ao processo (`com.example.myaudiohalproject`).
+2.  **Abra no Android Studio**: Abra o projeto no Android Studio.
+3.  **Sincronize o Gradle**: Certifique-se de que todas as dependências do Gradle sejam sincronizadas.
+4.  **Execute em um Emulador/Dispositivo**: Rode o aplicativo em um emulador Android ou em um dispositivo físico.
 
+Uma vez o aplicativo em execução:
 
-## 🤝 Contribuições
+*   **Teste da Simulação do Sensor de Velocidade**: Interaja com o botão "Atualizar Velocidade". O `TextView` de velocidade na UI deve ser atualizado com um novo valor aleatório. Verifique o **Logcat** para mensagens detalhadas do `VehicleSensorSimulator`, confirmando cada leitura.
+*   **Teste da Simulação de Comunicação CAN**: Clique no botão "Enviar Volume CAN (Simulado)". O `TextView` "Volume CAN" na UI deve ser atualizado dinamicamente com um valor de volume aleatório. No **Logcat**, você observará mensagens detalhadas do `VehicleCanBusSimulator` registrando tanto o envio quanto o recebimento das mensagens CAN (com IDs e dados em hexadecimal).
 
-Este projeto foi desenvolvido como parte de uma atividade acadêmica. Contribuições são bem-vindas para aprimoramento e demonstração de conceitos.
+## Tecnologias Utilizadas
 
+*   **Kotlin**
+*   **Java**
+*   **Android Studio**
+*   **Kotlin Coroutines**
+*   **Gradle**
+
+## Conclusão
+
+Este projeto demonstrou com sucesso a criação de uma plataforma simulada para explorar a complexa interação entre um aplicativo Android e sistemas de hardware veiculares. A utilização de abstrações eficazes como `VehicleSensorSimulator` e `VehicleCanBusSimulator`, combinada com o poder das Kotlin Coroutines para simular a comunicação assíncrona, permitiu a validação de fluxos de dados e a compreensão dos conceitos fundamentais de uma Hardware Abstraction Layer (HAL) e sua interação via JNI, preparando o terreno para futuras implementações em ambientes de hardware veicular reais.
